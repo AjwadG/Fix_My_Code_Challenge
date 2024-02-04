@@ -5,20 +5,20 @@ User class
 
 
 class User():
-    """ Documentation """
+    """ User class """
 
     def __init__(self):
-        """ Documentation """
+        """ initializetion of user instance """
         self.__email = None
 
     @property
     def email(self):
-        """ Documentation """
+        """ Email atr getter"""
         return self.__email
 
     @email.setter
     def email(self, value):
-        """ Documentation """
+        """ email atr setter """
         if type(value) is not str:
             raise TypeError("email must be a string")
         self.__email = value
