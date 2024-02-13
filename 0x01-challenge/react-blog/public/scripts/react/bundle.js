@@ -46885,20 +46885,20 @@ function AllPostActions(){"use strict";}
         var AllPostStore = require('../stores/AllPostStore');
         var state = AllPostStore.getState();
         if(!!state.postsByPage[pageNum]) {
-            this.actions.updatePsots(state.postsByPage[pageNum], pageNum);
+            this.actions.updatePosts(state.postsByPage[pageNum], pageNum);
         } else {
             var self = this;
 
             pageNum = pageNum -1;
 
             var end = (pageNum * config.itemsPerPage) + config.itemsPerPage;
-            var start = ((pageNum % 2) * config.itemsPerPage);
+            var start = (pageNum * config.itemsPerPage);
 
             if(typeof NProgress != 'undefined') {
                 NProgress.start();
             }
             request.get(config.baseUrl+'/ajax/postsByPage/' + start + '/' + end,function(err,response){
-                self.actions.updatePosts(response.body, pageNum + 1);
+                this.actions.updatePosts(response.body, pageNum + 1);
                 setTimeout(function(){
                     if(typeof NProgress != 'undefined') {
                         NProgress.done();
@@ -46920,7 +46920,7 @@ function AllPostActions(){"use strict";}
             (!!state.postListContent.header && state.postListContent.header != '')) {
             return;
         }
-        reqeust.get(config.baseUrl+'/ajax/postListContent',function(err,response){
+        request.get(config.baseUrl+'/ajax/postListContent',function(err,response){
             self.actions.updatePostListContent(response.body);
         });
     }});
@@ -46932,10 +46932,10 @@ function AllPostActions(){"use strict";}
         var state = AllPostStore.getState();
         if(state.numberOfPosts == 0) {
             request.get(config.baseUrl+'/ajax/getNumberOfPosts',function(err,response) {
-                self.actions.update_numberOfPosts(response.body.numberOfPosts);
+                self.actions.updateNumberOfPosts(response.body.numberOfPosts);
             });
         } else {
-            this.actions.update_numberOfPosts(state.numberOfPosts);
+            self.actions.updateNumberOfPosts(state.numberOfPosts)
         }
     }});
 
@@ -46957,6 +46957,7 @@ function AllPostActions(){"use strict";}
 
 
 module.exports = alt.createActions(AllPostActions);
+
 
 },{"../../config":2,"../alt":484,"../stores/AllPostStore":497,"superagent":473}],483:[function(require,module,exports){
 var alt = require('../alt');
@@ -47016,7 +47017,7 @@ function SinglePostActions(){"use strict";}
                     };
 
                     var type, path;
-                    for(const i=0; i<includes.length; i++) {
+                    for(let i=0; i<includes.length; i++) {
                         type = includes[i].type;
                         path = includes[i].path;
                         IncludeHandler.handleInclude(type, path, includeCallback);
@@ -47043,6 +47044,7 @@ function SinglePostActions(){"use strict";}
 
 
 module.exports = alt.createActions(SinglePostActions);
+
 
 },{"../../config":2,"../IncludeHandler":481,"../alt":484,"../stores/SinglePostStore":498,"superagent":473}],484:[function(require,module,exports){
 var Alt = require('alt');
@@ -47478,7 +47480,7 @@ var PostPreview = React.createClass({displayName: "PostPreview",
 
     render : function() {
         return (
-            React.createElement("a", {href: '/post/ + this.props.post.id + /'+this.props.post.slug, className: "single-post", onClick: this.loadPost}, 
+            React.createElement("a", {href: '/post/' + this.props.post.id + '/' + this.props.post.slug, className: "single-post", onClick: this.loadPost}, 
                 React.createElement("div", {className: "post-title"}, this.props.post.title), 
                 React.createElement("div", {className: "author-details"}, 
                     this.getAuthorDetails(this.props.post)
@@ -47489,6 +47491,7 @@ var PostPreview = React.createClass({displayName: "PostPreview",
 });
 
 module.exports = PostPreview;
+
 
 },{"../actions/SinglePostActions":483,"../mixins/AuthorMixin.jsx":495,"react/addons":299}],494:[function(require,module,exports){
 var React = require('react/addons');
